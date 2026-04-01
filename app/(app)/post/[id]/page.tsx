@@ -1,16 +1,18 @@
-
 import Image from "next/image";
 import Link from "next/link";
-import { dummyCurrentUser, dummyPosts } from "@/app/_data/dummyData";
+import { getSessionHandler } from "@/app/_libs/sessionHandler";
+import { Post } from "@/app/_types/types";
 
 interface PostPageProps {
   params: { id: string };
 }
 
-export default function PostPage({ params }: PostPageProps) {
-  const postId = Number(params.id);
+export default async function PostPage({ params }: PostPageProps) {
+  const { currentUser } = await getSessionHandler();
+  const Params = await params;
+  const postId = Number(Params.id);
+  const dummyPosts: Post[] = [];
   const post = dummyPosts.find((p) => p.id === postId);
-  
 
   if (!post) {
     return (
@@ -28,7 +30,7 @@ export default function PostPage({ params }: PostPageProps) {
     );
   }
 
-  const isOwner = post.author.id === dummyCurrentUser.id;
+  const isOwner = post.author.id === currentUser.id;
 
   return (
     <div className="max-w-3xl mx-auto px-6 py-10">
@@ -85,7 +87,6 @@ export default function PostPage({ params }: PostPageProps) {
             <Link
               href={`/profile/${post.author.id}`}
               className="flex items-center gap-3 hover:opacity-75 transition-opacity"
-              onClick={(e) => e.stopPropagation()}
             >
               <Image
                 src={post.author.profile_image || "/noUser.jpg"}
@@ -181,19 +182,17 @@ export default function PostPage({ params }: PostPageProps) {
         <div className="bg-[#111118] border border-[#252530] rounded-2xl p-5 space-y-4">
           <div className="flex items-start gap-3">
             <Image
-              src={dummyCurrentUser.profile_image || "/profileImage.jpg"}
-              alt={dummyCurrentUser.name}
+              src={currentUser.profile_image || "/profileImage.jpg"}
+              alt={currentUser.name}
               width={36}
               height={36}
               className="w-9 h-9 rounded-full object-cover shrink-0"
             />
             <div className="flex-1">
               <p className="text-[#f0f0f8] text-sm font-semibold mb-1">
-                {dummyCurrentUser.name}
+                {currentUser.name}
               </p>
               <textarea
-                // value={newComment}
-                // onChange={(e) => setNewComment(e.target.value)}
                 placeholder="Write a comment..."
                 rows={3}
                 className="w-full bg-[#18181f] border border-[#252530] rounded-lg px-4 py-2.5 text-[#f0f0f8] text-sm placeholder-[#55556a] outline-none focus:border-[#7c6af7] focus:ring-2 focus:ring-[#7c6af7]/20 transition-all resize-none"
@@ -215,7 +214,9 @@ export default function PostPage({ params }: PostPageProps) {
             >
               <div className="flex items-start gap-3">
                 <Image
-                  src={"https://api.dicebear.com/7.x/avataaars/svg?seed=comment{i}"}
+                  src={
+                    "https://api.dicebear.com/7.x/avataaars/svg?seed=comment{i}"
+                  }
                   alt="Commenter"
                   width={36}
                   height={36}

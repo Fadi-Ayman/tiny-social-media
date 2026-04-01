@@ -2,9 +2,7 @@ import Image from "next/image";
 import { UserProfileCardProps } from "../_types/types";
 
 export default function UserProfileCard({
-  user,
-  isOwnProfile = false,
-}: UserProfileCardProps) {
+  user}: UserProfileCardProps) {
   return (
     <div className="bg-[#111118] border border-[#252530] rounded-2xl overflow-hidden">
       {/* Cover */}
@@ -25,29 +23,6 @@ export default function UserProfileCard({
               className="w-20 h-20 rounded-full object-cover block"
             />
           </div>
-
-          {isOwnProfile ? (
-            <button className="flex items-center gap-1.5 px-4 py-2 border border-[#3a3a4a] rounded-full text-[#8888a4] hover:text-[#7c6af7] hover:bg-[#7c6af7]/10 hover:border-[#7c6af7] text-xs font-semibold font-display transition-all mb-1">
-              <svg
-                width="13"
-                height="13"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" />
-                <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
-              </svg>
-              Edit Profile
-            </button>
-          ) : (
-            <button className="px-5 py-2 bg-[#7c6af7] hover:bg-[#6a59e0] text-white text-xs font-bold font-display rounded-full shadow-[0_4px_16px_rgba(124,106,247,0.3)] hover:-translate-y-0.5 transition-all mb-1">
-              Follow
-            </button>
-          )}
         </div>
 
         {/* User info */}

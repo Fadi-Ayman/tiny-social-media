@@ -1,4 +1,3 @@
-
 export interface Author {
   id: number;
   profile_image: string;
@@ -17,7 +16,7 @@ export interface Post {
   comments_count: number;
 }
 
-export interface ProfileUser {
+export interface user {
   id: number;
   username: string;
   name: string;
@@ -28,6 +27,10 @@ export interface ProfileUser {
 }
 
 export interface UserProfileCardProps {
-  user: ProfileUser;
-  isOwnProfile?: boolean;
+  user: user;
+}
+
+export interface SessionData {
+  token: string | null;
+  user: user | null;
 }

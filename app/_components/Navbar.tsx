@@ -3,10 +3,12 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useState, useRef, useEffect } from "react";
-import { dummyCurrentUser } from "../_data/dummyData";
+import { user } from "../_types/types";
+import { useRouter } from "next/navigation";
+import { logoutAction } from "../_actions/auth.actions";
 
-export default function Navbar() {
-  const user = dummyCurrentUser;
+export default function Navbar({ user }: { user: user | null }) {
+  const router = useRouter();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -29,6 +31,18 @@ export default function Navbar() {
     };
   }, [isDropdownOpen]);
 
+  const handleLogout = async () => {
+    try {
+      await logoutAction();
+      router.push("/login");
+    } catch (err: unknown | Error) {
+      if (err instanceof Error) {
+        const message = err?.message || "Something went wrong";
+        throw new Error(message);
+      }
+    }
+  };
+
   return (
     <header className="sticky top-0 bg-[#0a0a0f]/80 backdrop-blur-xl border-b border-[#252530] z-50">
       <div className="max-w-6xl mx-auto px-6 h-16 flex justify-between items-center gap-3 sm:gap-6">
@@ -48,8 +62,8 @@ export default function Navbar() {
           >
             <div className="relative w-7 h-7 shrink-0">
               <Image
-                src={user.profile_image || "/profileImage.jpg"}
-                alt={user.name}
+                src={user?.profile_image || "/profileImage.jpg"}
+                alt={user?.name || "User Name"}
                 width={28}
                 height={28}
                 className="w-7 h-7 rounded-full object-cover"
@@ -57,7 +71,7 @@ export default function Navbar() {
               <span className="absolute bottom-0 right-0 w-2 h-2 rounded-full bg-[#5ce0a8] border-2 border-[#18181f] block" />
             </div>
             <span className=" sm:inline text-[#f0f0f8] text-xs font-medium max-w-22.5 truncate">
-              {user.username}
+              {user?.username}
             </span>
           </button>
 
@@ -66,7 +80,7 @@ export default function Navbar() {
             <div className="absolute top-14 right-0 bg-[#0a0a0f]/95 backdrop-blur-xl border border-[#252530] rounded-lg shadow-lg z-50 w-48">
               <nav className="flex flex-col gap-1 py-2">
                 <Link
-                  href={`/profile/${user.id}`}
+                  href={`/profile/${user?.id}`}
                   className="flex items-center gap-2 px-4 py-2 text-[#8888a4] hover:text-[#f0f0f8] hover:bg-[#18181f] text-sm font-medium transition-all"
                   onClick={() => setIsDropdownOpen(false)}
                 >
@@ -85,10 +99,9 @@ export default function Navbar() {
                   </svg>
                   Profile
                 </Link>
-                <Link
-                  href="/login"
+                <button
                   className="flex items-center gap-2 px-4 py-2 text-[#8888a4] hover:text-[#f06a6a] hover:bg-[#f06a6a]/10 text-sm font-medium transition-all"
-                  onClick={() => setIsDropdownOpen(false)}
+                  onClick={handleLogout}
                 >
                   <svg
                     width="14"
@@ -105,7 +118,7 @@ export default function Navbar() {
                     <line x1="21" y1="12" x2="9" y2="12" />
                   </svg>
                   Logout
-                </Link>
+                </button>
               </nav>
             </div>
           )}
