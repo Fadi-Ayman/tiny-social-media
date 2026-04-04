@@ -24,6 +24,7 @@ export default function UserProfileCard({ user }: UserProfileCardProps) {
               width={80}
               height={80}
               className="w-20 h-20 rounded-full object-cover block"
+              loading="eager"
             />
           </div>
         </div>

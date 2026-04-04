@@ -45,7 +45,7 @@ export default function PostCard({
       ? post.author.profile_image
       : "/noUser.jpg";
 
-      console.log(post)
+
   return (
     <>
       <article
@@ -61,6 +61,7 @@ export default function PostCard({
               fill
               className="object-cover group-hover:scale-[1.03] transition-transform duration-500"
               sizes="(max-width: 768px) 100vw, 600px"
+              loading="eager"
             />
             {/* Tags overlay */}
             {post.tags.length > 0 && (
@@ -91,6 +92,7 @@ export default function PostCard({
                 alt={post.author.name || post.title || post.id.toString()}
                 width={34}
                 height={34}
+                loading="eager"
                 className="w-8.5 h-8.5 rounded-full object-cover border-2 border-[#252530] shrink-0"
               />
               <div className="flex flex-col gap-0">
@@ -237,6 +239,7 @@ export default function PostCard({
                   width={34}
                   height={34}
                   className="w-8.5 h-8.5 rounded-full object-cover shrink-0"
+                  loading="eager"
                 />
                 <div className="flex-1">
                   <textarea
@@ -268,6 +271,7 @@ export default function PostCard({
                       width={32}
                       height={32}
                       className="w-8 h-8 rounded-full object-cover shrink-0"
+                      loading="eager"
                     />
                     <div className="flex-1 bg-[#18181f] rounded-lg p-2.5">
                       <div className="flex items-center justify-between gap-2">

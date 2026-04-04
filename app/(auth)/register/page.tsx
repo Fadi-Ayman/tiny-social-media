@@ -45,8 +45,7 @@ export default function RegisterPage() {
           router.push("/home");
           formik.resetForm();
         } catch (err: unknown | Error) {
-          if (err instanceof Error) {
-            console.log(err.message);
+          if (err instanceof Error) {;
             const message = err?.message || "Something went wrong";
             toast.error(message);
           }

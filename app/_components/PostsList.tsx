@@ -41,7 +41,6 @@ function PostsList({ currentUserId }: PostsListProps) {
         const newPosts = await getPosts(page);
 
         if (signal.aborted) {
-          console.log("Request was aborted");
           return;
         }
 
@@ -54,10 +53,8 @@ function PostsList({ currentUserId }: PostsListProps) {
         }
       } catch (error) {
         if (error instanceof Error && error.name === "AbortError") {
-          console.log("Fetch request cancelled");
           return;
         }
-        console.error("Error fetching posts:", error);
         setHasMore(false);
       } finally {
         if (!signal.aborted) {

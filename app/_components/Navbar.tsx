@@ -66,6 +66,7 @@ export default function Navbar({ user }: { user: user | null }) {
                 alt={user?.name || "User Name"}
                 width={28}
                 height={28}
+                loading="eager"
                 className="w-7 h-7 rounded-full object-cover"
               />
               <span className="absolute bottom-0 right-0 w-2 h-2 rounded-full bg-[#5ce0a8] border-2 border-[#18181f] block" />

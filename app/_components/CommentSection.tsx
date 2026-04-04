@@ -41,6 +41,7 @@ export default function CommentSection({
             width={36}
             height={36}
             className="w-9 h-9 rounded-full object-cover shrink-0"
+            loading="eager"
           />
           <div className="flex-1">
             <p className="text-[#f0f0f8] text-sm font-semibold mb-1">
@@ -77,6 +78,7 @@ export default function CommentSection({
                   width={36}
                   height={36}
                   className="w-9 h-9 rounded-full object-cover shrink-0"
+                  loading="eager"
                 />
                 <div className="flex-1">
                   <div className="flex items-center justify-between mb-1">
