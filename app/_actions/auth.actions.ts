@@ -1,5 +1,6 @@
 "use server";
 import { cookies } from "next/headers";
+import { baseUrl } from "../_services/baseUrl";
 
 export async function registerAction(formData: FormData) {
   const name = formData.get("name")?.toString().trim();
@@ -24,7 +25,7 @@ export async function registerAction(formData: FormData) {
     }
 
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/register`,
+      `${baseUrl}/register`,
       {
         method: "POST",
         body: backendFormData,
@@ -79,7 +80,7 @@ export async function loginAction(formData: FormData) {
   }
 
   try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/login`, {
+    const response = await fetch(`${baseUrl}/login`, {
       method: "POST",
       body: JSON.stringify(backendFormData),
       headers: {

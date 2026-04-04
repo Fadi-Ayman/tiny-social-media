@@ -100,7 +100,7 @@ export default function Navbar({ user }: { user: user | null }) {
                   Profile
                 </Link>
                 <button
-                  className="flex items-center gap-2 px-4 py-2 text-[#8888a4] hover:text-[#f06a6a] hover:bg-[#f06a6a]/10 text-sm font-medium transition-all"
+                  className="flex items-center gap-2 px-4 py-2 text-[#8888a4] hover:text-[#f06a6a] hover:bg-[#f06a6a]/10 text-sm font-medium transition-all cursor-pointer"
                   onClick={handleLogout}
                 >
                   <svg

@@ -1,14 +1,9 @@
-import NoPostsYet from "@/app/_components/NoPostsYet";
-import PostCard from "@/app/_components/PostCard";
-
+import PostsList from "@/app/_components/PostsList";
 import { getSessionHandler } from "@/app/_libs/sessionHandler";
-import { Post } from "@/app/_types/types";
 
 export default async function HomePage() {
   const { currentUser } = await getSessionHandler();
   const currentUserId = currentUser?.id;
-  const dummyPosts: Post[] = [];
-
   return (
     <div className="max-w-6xl mx-auto px-6 py-10">
       {/* Header */}
@@ -22,21 +17,8 @@ export default async function HomePage() {
           </p>
         </div>
       </div>
-
       {/* Posts grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-        {!dummyPosts.length ? (
-          <NoPostsYet/>
-        ) : (
-          dummyPosts.map((post) => (
-            <PostCard
-              key={post.id}
-              post={post}
-              isOwner={post.author.id === currentUserId}
-            />
-          ))
-        )}
-      </div>
+      <PostsList currentUserId={currentUserId} />
     </div>
   );
 }

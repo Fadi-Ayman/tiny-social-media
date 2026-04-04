@@ -5,6 +5,23 @@ export interface Author {
   name: string;
 }
 
+type Comment = {
+  id: number;
+  body: string;
+  author: {
+    id: number;
+    profile_image?: string 
+    is_fake: boolean;
+    username: string;
+    name: string;
+    email: string;
+    email_verified_at: string | null;
+    remember_token: string | null;
+    created_at: string;
+    updated_at: string;
+  };
+}
+
 export interface Post {
   id: number;
   title: string;
@@ -14,6 +31,7 @@ export interface Post {
   tags: string[];
   created_at: string;
   comments_count: number;
+  comments: Comment[];
 }
 
 export interface user {

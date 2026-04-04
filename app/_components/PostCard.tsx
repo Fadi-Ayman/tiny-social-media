@@ -6,17 +6,25 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import EditPostModal from "./EditPostModal";
 import DeleteConfirmModal from "./DeleteConfirmModal";
-import { Post } from "../_types/types";
+import { Post, user } from "../_types/types";
 
- interface PostCardProps {
+interface PostCardProps {
   post: Post;
   isOwner?: boolean;
+  currentUser?: user;
+  showComments?: boolean;
 }
 
-export default function PostCard({ post, isOwner = false }: PostCardProps) {
+export default function PostCard({
+  post,
+  isOwner = false,
+  currentUser,
+  showComments = false,
+}: PostCardProps) {
   const router = useRouter();
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  const [isCommentsOpen, setIsCommentsOpen] = useState(false);
 
   const handleArticleClick = () => {
     router.push(`/post/${post.id}`);
@@ -29,6 +37,15 @@ export default function PostCard({ post, isOwner = false }: PostCardProps) {
   const handleButtonClick = (e: React.MouseEvent) => {
     e.stopPropagation();
   };
+
+  const postImage =
+    post.image && typeof post.image === "string" ? post.image : "/noPhoto.jpg";
+  const authorImage =
+    post.author.profile_image && typeof post.author.profile_image === "string"
+      ? post.author.profile_image
+      : "/noUser.jpg";
+
+      console.log(post)
   return (
     <>
       <article
@@ -39,8 +56,8 @@ export default function PostCard({ post, isOwner = false }: PostCardProps) {
         {post.image && (
           <div className="relative w-full aspect-video overflow-hidden bg-[#18181f]">
             <Image
-              src={post.image || "/noPhoto.jpg"}
-              alt={post.title}
+              src={postImage}
+              alt={post.title || post.id.toString()}
               fill
               className="object-cover group-hover:scale-[1.03] transition-transform duration-500"
               sizes="(max-width: 768px) 100vw, 600px"
@@ -70,8 +87,8 @@ export default function PostCard({ post, isOwner = false }: PostCardProps) {
           >
             <div className="flex items-center gap-2.5 hover:opacity-75 transition-opacity cursor-pointer">
               <Image
-                src={post.author.profile_image || "/noUser.jpg"}
-                alt={post.author.name}
+                src={authorImage}
+                alt={post.author.name || post.title || post.id.toString()}
                 width={34}
                 height={34}
                 className="w-8.5 h-8.5 rounded-full object-cover border-2 border-[#252530] shrink-0"
@@ -92,31 +109,69 @@ export default function PostCard({ post, isOwner = false }: PostCardProps) {
 
           {/* Content - entire article is now clickable */}
           <div className="flex flex-col gap-1.5">
-            <h2 className="font-display font-bold text-base text-[#f0f0f8] leading-snug hover:text-[#7c6af7] transition-colors">
+            <h2 className="font-display font-bold text-base text-white leading-snug transition-colors">
               {post.title}
             </h2>
-            <p className="text-[#8888a4] text-sm leading-relaxed line-clamp-2 hover:text-[#f0f0f8] transition-colors">
+            <p className="text-white text-sm leading-relaxed line-clamp-2  transition-colors">
               {post.body}
             </p>
           </div>
 
           {/* Footer */}
           <div className="flex items-center justify-between pt-3 border-t border-[#252530] mt-1">
-            <span className="flex items-center gap-1.5 text-[#55556a] text-xs">
-              <svg
-                width="13"
-                height="13"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
+            {/* Comments section with toggle arrow */}
+            {showComments && currentUser ? (
+              <button
+                onClick={(e) => {
+                  handleButtonClick(e);
+                  setIsCommentsOpen(!isCommentsOpen);
+                }}
+                className="flex items-center gap-1.5 text-[#55556a] hover:text-[#f0f0f8] text-xs transition-colors cursor-pointer pe-10"
               >
-                <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
-              </svg>
-              {post.comments_count} comments
-            </span>
+                <svg
+                  width="13"
+                  height="13"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
+                </svg>
+                {post.comments_count} comments
+                <svg
+                  width="13"
+                  height="13"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  className={`transition-transform duration-300 ${
+                    isCommentsOpen ? "rotate-180" : ""
+                  }`}
+                >
+                  <polyline points="6 9 12 15 18 9" />
+                </svg>
+              </button>
+            ) : (
+              <span className="flex items-center gap-1.5 text-[#55556a] text-xs">
+                <svg
+                  width="13"
+                  height="13"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
+                </svg>
+                {post.comments_count} comments
+              </span>
+            )}
 
             {/* Owner actions */}
             {isOwner && (
@@ -170,6 +225,66 @@ export default function PostCard({ post, isOwner = false }: PostCardProps) {
               </div>
             )}
           </div>
+
+          {/* Collapsible comments section */}
+          {showComments && currentUser && isCommentsOpen && (
+            <div className="mt-4 pt-4 border-t border-[#252530] space-y-4">
+              {/* Comment input */}
+              <div className="flex items-start gap-3">
+                <Image
+                  src={currentUser.profile_image && typeof currentUser.profile_image === "string" ? currentUser.profile_image : "/profileImage.jpg"}
+                  alt={currentUser.name}
+                  width={34}
+                  height={34}
+                  className="w-8.5 h-8.5 rounded-full object-cover shrink-0"
+                />
+                <div className="flex-1">
+                  <textarea
+                    placeholder="Write a comment..."
+                    rows={2}
+                    className="w-full bg-[#18181f] border border-[#252530] rounded-lg px-3 py-2 text-[#f0f0f8] text-sm placeholder-[#55556a] outline-none focus:border-[#7c6af7] focus:ring-2 focus:ring-[#7c6af7]/20 transition-all resize-none"
+                    onClick={(e) => handleButtonClick(e)}
+                  />
+                  <div className="mt-2 flex justify-end">
+                    <button className="px-3 py-1.5 bg-[#7c6af7] hover:bg-[#6a59e0] text-white text-xs font-semibold rounded-lg transition-all cursor-pointer">
+                      Comment
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Comments list */}
+              <div className="space-y-3 mt-4">
+                {post.comments?.map((comment, i) => (
+                  <div key={comment.id || i} className="flex items-start gap-2">
+                    <Image
+                      src={
+                        comment.author.profile_image &&
+                        typeof comment.author.profile_image === "string"
+                          ? comment.author.profile_image
+                          : "/profileImage.jpg"
+                      }
+                      alt={comment.author.name || comment.id.toString()}
+                      width={32}
+                      height={32}
+                      className="w-8 h-8 rounded-full object-cover shrink-0"
+                    />
+                    <div className="flex-1 bg-[#18181f] rounded-lg p-2.5">
+                      <div className="flex items-center justify-between gap-2">
+                        <p className="text-[#f0f0f8] text-xs font-semibold">
+                          {comment.author.name}
+                        </p>
+                        <span className="text-[#55556a] text-xs">2d ago</span>
+                      </div>
+                      <p className="text-[#8888a4] text-xs mt-1 leading-relaxed">
+                        {comment.body}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </article>
 

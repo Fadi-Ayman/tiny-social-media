@@ -1,8 +1,11 @@
 import Image from "next/image";
 import { UserProfileCardProps } from "../_types/types";
 
-export default function UserProfileCard({
-  user}: UserProfileCardProps) {
+export default function UserProfileCard({ user }: UserProfileCardProps) {
+  const userImage =
+    user.profile_image && typeof user.profile_image === "string"
+      ? user.profile_image
+      : "/profileImage.jpg";
   return (
     <div className="bg-[#111118] border border-[#252530] rounded-2xl overflow-hidden">
       {/* Cover */}
@@ -16,7 +19,7 @@ export default function UserProfileCard({
         <div className="flex items-end justify-between -mt-11 mb-4 ">
           <div className="border-[3px] border-[#111118] rounded-full bg-[#111118] z-99">
             <Image
-              src={user.profile_image || "/profileImage.jpg"}
+              src={userImage}
               alt={user.name}
               width={80}
               height={80}
